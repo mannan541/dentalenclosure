@@ -647,6 +647,14 @@ const App = () => {
           background-color: var(--muted);
         }
 
+        .grid {
+          display: grid;
+          gap: 2rem;
+        }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
         .card {
           padding: 2.5rem;
           border-radius: var(--radius);
