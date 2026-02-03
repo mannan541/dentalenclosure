@@ -105,7 +105,7 @@ const App = () => {
       name: "Model Town Branch",
       location: "A Block Store Market",
       address: "Shop 43-44, A-Block, Store Market, Model Town, Lahore, 54700",
-      phone: "0345 8477001",
+      phone: "+92 323 7792138",
       hours: "9:00 AM - 3:00 PM (Mon-Sat)",
       link: "https://maps.app.goo.gl/gpGAQsisrnXnhstQ7",
       startTime: "09:00",
@@ -446,23 +446,11 @@ const App = () => {
             </div>
             <div>
               <h3>Contact Info</h3>
-              <p>Model Town: 0345 8477001</p>
-              <p>DHA: +92 323 7792138</p>
+              <p>Phone: +92 323 7792138</p>
               <p>Email: info@dentalenclosure.com</p>
               <div className="footer-contact-btns mt-2">
-                <a href="tel:03458477001" className="btn btn-primary btn-sm w-full mb-1">
-                  <Phone size={14} style={{ marginRight: '6px' }} /> Call Model Town
-                </a>
                 <a href="tel:923237792138" className="btn btn-primary btn-sm w-full mb-1">
-                  <Phone size={14} style={{ marginRight: '6px' }} /> Call DHA
-                </a>
-                <a
-                  href="https://wa.me/923458477001?text=Hello%20Dental%20Enclosure%2C%20I'd%20like%20to%20book%20an%20appointment."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-whatsapp btn-sm w-full mb-1"
-                >
-                  <MessageCircle size={14} style={{ marginRight: '6px' }} /> WhatsApp Model Town
+                  <Phone size={14} style={{ marginRight: '6px' }} /> Call Now
                 </a>
                 <a
                   href="https://wa.me/923237792138?text=Hello%20Dental%20Enclosure%2C%20I'd%20like%20to%20book%20an%20appointment."
@@ -470,7 +458,7 @@ const App = () => {
                   rel="noopener noreferrer"
                   className="btn btn-whatsapp btn-sm w-full"
                 >
-                  <MessageCircle size={14} style={{ marginRight: '6px' }} /> WhatsApp DHA
+                  <MessageCircle size={14} style={{ marginRight: '6px' }} /> WhatsApp Us
                 </a>
               </div>
             </div>
