@@ -11,11 +11,15 @@ import {
   Award,
   Users,
   Menu,
-  X,
-  Send,
-  Moon,
-  Sun,
-  MessageCircle
+  MessageCircle,
+  Heart,
+  Zap,
+  Sparkles,
+  Smile,
+  Scissors,
+  Activity,
+  Thermometer,
+  UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import emailjs from '@emailjs/browser';
@@ -82,6 +86,14 @@ const App = () => {
     { title: "Cosmetic Dentistry", desc: "Teeth whitening, veneers, and smile makeovers to boost your confidence.", icon: <Award size={24} /> },
     { title: "Pediatric Dentistry", desc: "Gentle and specialized dental care for your little ones.", icon: <Users size={24} /> },
     { title: "Orthodontics", desc: "Aligning your teeth with modern braces and invisible aligners.", icon: <Calendar size={24} /> },
+    { title: "Teeth Cleaning", desc: "Professional scaling and polishing for a healthy, debris-free mouth.", icon: <Zap size={24} /> },
+    { title: "Teeth Whitening", desc: "Advanced whitening treatments for a brighter, more radiant smile.", icon: <Sparkles size={24} /> },
+    { title: "Emergency Dentistry", desc: "Urgent care for toothaches, accidents, and dental emergencies.", icon: <Activity size={24} /> },
+    { title: "Smile Makeover", desc: "Comprehensive aesthetic treatments to transform your complete look.", icon: <Smile size={24} /> },
+    { title: "Tooth Extraction", desc: "Safe and painless removal of damaged or wisdom teeth.", icon: <Scissors size={24} /> },
+    { title: "Restorative Fillings", desc: "High-quality, long-lasting fillings for decayed or chipped teeth.", icon: <ShieldCheck size={24} /> },
+    { title: "Root Canal Therapy", desc: "Expert treatment to save infected teeth and relieve deep pain.", icon: <Thermometer size={24} /> },
+    { title: "Periodontal Care", desc: "Treating gum disease and maintaining healthy supporting tissues.", icon: <Heart size={24} /> }
   ];
 
   const branches = [
