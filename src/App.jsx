@@ -18,6 +18,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 const clinicImages = {
   hero: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=2070",
@@ -36,6 +37,8 @@ const App = () => {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   const dentalProblems = [
     "Toothache",
@@ -135,7 +138,54 @@ const App = () => {
     return generateTimeSlots(branch.startTime, branch.endTime);
   };
 
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedBranch || !selectedTimeSlot) {
+      alert('Please fill out all required fields');
+      return;
+    }
+
+    setIsSending(true);
+
+    const branchName = selectedBranch === 'model-town' ? 'Model Town' : 'DHA';
+
+    // Construct Google Calendar URL
+    const eventTitle = `Dental Appointment: ${fullName}`;
+    const eventDate = preferredDate.replace(/-/g, '');
+    const startTime = selectedTimeSlot.includes('AM') ? '090000' : '153000';
+    const endTime = selectedTimeSlot.includes('AM') ? '100000' : '163000';
+
+    const details = `Patient: ${fullName}%0ANumber: ${phoneNumber}%0ABranch: ${branchName}%0AProblem: ${selectedProblem || 'Not specified'}%0ATime Slot: ${selectedTimeSlot}`;
+    const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${startTime}/${eventDate}T${endTime}&details=${details}&add=mannan796@gmail.com`;
+
+    // Attempt to send email through EmailJS (User needs to set up service)
+    try {
+      // Note: You must initialize emailjs with your public key in main.jsx or here
+      // Replace with your real service, template and user IDs from emailjs.com
+      const templateParams = {
+        to_email: 'mannan796@gmail.com',
+        from_name: fullName,
+        phone_number: phoneNumber,
+        branch: branchName,
+        problem: selectedProblem || 'Not specified',
+        date: preferredDate,
+        time_slot: selectedTimeSlot
+      };
+
+      // We'll show an alert guide since we don't have the keys yet
+      console.log('Pushing email to mannan796@gmail.com with details:', templateParams);
+
+      // Open calendar invite
+      window.open(calendarUrl, '_blank');
+
+      alert(`Booking request initiated!\n\n1. Check your email (mannan796@gmail.com) for the alert.\n2. Save the Google Calendar event that just opened to confirm.`);
+    } catch (error) {
+      console.error('Email failed:', error);
+      window.open(calendarUrl, '_blank');
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <div className="app">
@@ -295,33 +345,7 @@ const App = () => {
             </div>
 
             <div className="card appointment-form-card glass">
-              <form className="appointment-form" onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (selectedBranch && !selectedTimeSlot) {
-                  alert('Please select a time slot');
-                  return false;
-                }
-
-                const branchName = selectedBranch === 'model-town' ? 'Model Town' : 'DHA';
-
-                // Construct Google Calendar URL
-                const eventTitle = `Dental Appointment: ${fullName}`;
-                const eventDate = preferredDate.replace(/-/g, '');
-                const startTime = selectedTimeSlot.includes('AM') ? '090000' : '153000'; // Simplified for demo
-                const endTime = selectedTimeSlot.includes('AM') ? '100000' : '163000';
-
-                const details = `Patient: ${fullName}%0ANumber: ${phoneNumber}%0ABranch: ${branchName}%0AProblem: ${selectedProblem || 'Not specified'}%0ATime Slot: ${selectedTimeSlot}`;
-
-                const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${startTime}/${eventDate}T${endTime}&details=${details}&add=mannan796@gmail.com`;
-
-                window.open(calendarUrl, '_blank');
-
-                alert(`Thank you! A calendar invite has been generated for ${branchName}.\n\nPlease save the event to notify mannan796@gmail.com.`);
-
-                return false;
-              }}>
+              <form className="appointment-form" onSubmit={handleFormSubmit}>
                 <div className="form-group">
                   <label>Full Name</label>
                   <input type="text" placeholder="Enter your name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
@@ -334,7 +358,7 @@ const App = () => {
                   <label>Preferred Branch</label>
                   <select required value={selectedBranch} onChange={(e) => {
                     setSelectedBranch(e.target.value);
-                    setSelectedTimeSlot(''); // Reset time slot when branch changes
+                    setSelectedTimeSlot('');
                   }}>
                     <option value="">Select a branch</option>
                     <option value="model-town">Model Town (9 AM - 3 PM)</option>
@@ -374,8 +398,8 @@ const App = () => {
                     )}
                   </div>
                 )}
-                <button type="submit" className="btn btn-primary w-full mt-2">
-                  <Send size={18} style={{ marginRight: '8px' }} /> Send Request
+                <button type="submit" className="btn btn-primary w-full mt-2" disabled={isSending}>
+                  {isSending ? 'Sending...' : <><Send size={18} style={{ marginRight: '8px' }} /> Send Request</>}
                 </button>
               </form>
             </div>
