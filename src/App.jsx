@@ -33,6 +33,9 @@ const App = () => {
   const [theme, setTheme] = useState('light');
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedProblem, setSelectedProblem] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [preferredDate, setPreferredDate] = useState('');
 
   const dentalProblems = [
     "Toothache",
@@ -302,17 +305,30 @@ const App = () => {
                 }
 
                 const branchName = selectedBranch === 'model-town' ? 'Model Town' : 'DHA';
-                alert(`Thank you! Your appointment request has been sent.\n\nBranch: ${branchName}\nProblem: ${selectedProblem || 'Not specified'}\nTime: ${selectedTimeSlot}\n\n(Simulation: This would be saved to Google Calendar/Forms)`);
+
+                // Construct Google Calendar URL
+                const eventTitle = `Dental Appointment: ${fullName}`;
+                const eventDate = preferredDate.replace(/-/g, '');
+                const startTime = selectedTimeSlot.includes('AM') ? '090000' : '153000'; // Simplified for demo
+                const endTime = selectedTimeSlot.includes('AM') ? '100000' : '163000';
+
+                const details = `Patient: ${fullName}%0ANumber: ${phoneNumber}%0ABranch: ${branchName}%0AProblem: ${selectedProblem || 'Not specified'}%0ATime Slot: ${selectedTimeSlot}`;
+
+                const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${startTime}/${eventDate}T${endTime}&details=${details}&add=mannan796@gmail.com`;
+
+                window.open(calendarUrl, '_blank');
+
+                alert(`Thank you! A calendar invite has been generated for ${branchName}.\n\nPlease save the event to notify mannan796@gmail.com.`);
 
                 return false;
               }}>
                 <div className="form-group">
                   <label>Full Name</label>
-                  <input type="text" placeholder="Enter your name" required />
+                  <input type="text" placeholder="Enter your name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Phone Number</label>
-                  <input type="tel" placeholder="e.g. 0300 1234567" required />
+                  <input type="tel" placeholder="e.g. 0300 1234567" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Preferred Branch</label>
@@ -336,7 +352,7 @@ const App = () => {
                 </div>
                 <div className="form-group">
                   <label>Preferred Date</label>
-                  <input type="date" required />
+                  <input type="date" required value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
                 </div>
                 {selectedBranch && (
                   <div className="form-group">
