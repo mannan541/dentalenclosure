@@ -208,8 +208,18 @@ const App = () => {
       {/* Navigation */}
       <nav className={`nav ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container nav-content">
-          <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
-            <span className="gradient-text">Dental</span> Enclosure
+          <div className="logo-container" onClick={() => {
+            const homeSection = document.getElementById('home');
+            if (homeSection) {
+              homeSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }} style={{ cursor: 'pointer' }}>
+            <img src="/favicon.png" alt="Dental Enclosure Logo" className="logo-image" />
+            <span className="logo-text">
+              <span className="gradient-text">Dental</span> Enclosure
+            </span>
           </div>
 
           <div className="desktop-links">
@@ -219,7 +229,7 @@ const App = () => {
             <button className="theme-toggle-btn" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
               {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             </button>
-            <button className="btn btn-primary" onClick={() => document.getElementById('appointment').scrollIntoView()}>Book Now</button>
+            <button className="btn btn-primary" onClick={() => document.getElementById('appointment').scrollIntoView({ behavior: 'smooth' })}>Book Now</button>
           </div>
 
           <div className="mobile-nav-actions">
@@ -245,7 +255,7 @@ const App = () => {
             <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
             <a href="#services" onClick={() => setIsMenuOpen(false)}>Services</a>
             <a href="#branches" onClick={() => setIsMenuOpen(false)}>Branches</a>
-            <button className="btn btn-primary" onClick={() => { setIsMenuOpen(false); document.getElementById('appointment').scrollIntoView(); }}>Book Now</button>
+            <button className="btn btn-primary" onClick={() => { setIsMenuOpen(false); document.getElementById('appointment').scrollIntoView({ behavior: 'smooth' }); }}>Book Now</button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -261,7 +271,7 @@ const App = () => {
             <h1 className="hero-title">Your Smile, Our <span className="gradient-text">Masterpiece</span></h1>
             <p className="hero-subtitle">Experience world-class dental care with Dr. Farrah Mushtaq at Dental Enclosure. Modern clinics in Model Town & DHA Lahore.</p>
             <div className="hero-actions">
-              <button className="btn btn-primary" onClick={() => document.getElementById('appointment').scrollIntoView()}>Get Started</button>
+              <button className="btn btn-primary" onClick={() => document.getElementById('appointment').scrollIntoView({ behavior: 'smooth' })}>Get Started</button>
             </div>
           </motion.div>
 
@@ -491,7 +501,24 @@ const App = () => {
           justify-content: space-between;
           align-items: center;
         }
-        .logo {
+        .logo-container {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          transition: transform 0.2s ease;
+        }
+        .logo-container:hover {
+          transform: scale(1.05);
+        }
+        .logo-image {
+          height: 50px;
+          width: auto;
+          transition: all 0.3s ease;
+        }
+        .nav.scrolled .logo-image {
+          height: 40px;
+        }
+        .logo-text {
           font-size: 1.5rem;
           font-weight: 700;
         }
@@ -834,6 +861,15 @@ const App = () => {
           .appointment-grid { gap: 3rem; }
           .time-slots-grid {
             grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+          }
+          .logo-image {
+            height: 40px;
+          }
+          .nav.scrolled .logo-image {
+            height: 35px;
+          }
+          .logo-text {
+            font-size: 1.2rem;
           }
         }
       `}</style>

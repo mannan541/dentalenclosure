@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary: #0ea5e9;
-  --primary-dark: #0284c7;
-  --secondary: #6366f1;
-  --accent: #f43f5e;
+  --primary: #2BADA4;
+  --primary-dark: #239891;
+  --secondary: #1D8B84;
+  --accent: #FDB913;
   --background: #ffffff;
   --foreground: #0f172a;
   --muted: #f1f5f9;
@@ -13,7 +13,7 @@
   --card-foreground: #0f172a;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #0ea5e9;
+  --ring: #2BADA4;
   --radius: 0.75rem;
 }
 
@@ -26,6 +26,10 @@
   --card-foreground: #f8fafc;
   --border: #334155;
   --input: #1e293b;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
