@@ -36,6 +36,13 @@ const clinicImages = {
   service3: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1000"
 };
 
+// EmailJS Configuration - Place your keys here
+const EMAILJS_CONFIG = {
+  SERVICE_ID: "service_1v38cd7",
+  TEMPLATE_ID: "template_bal2wdj",
+  PUBLIC_KEY: "YOXAEjDy9af_g9Ca9"
+};
+
 const App = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,6 +53,7 @@ const App = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+  const [patientEmail, setPatientEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
 
   const dentalProblems = [
@@ -72,6 +80,11 @@ const App = () => {
   ];
 
   useEffect(() => {
+    // Initialize EmailJS with your Public Key
+    if (EMAILJS_CONFIG.PUBLIC_KEY && EMAILJS_CONFIG.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+      emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+    }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -156,7 +169,7 @@ const App = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedBranch || !selectedTimeSlot) {
+    if (!selectedBranch || !selectedTimeSlot || !fullName || !phoneNumber || !preferredDate) {
       alert('Please fill out all required fields');
       return;
     }
@@ -165,39 +178,57 @@ const App = () => {
 
     const branchName = selectedBranch === 'model-town' ? 'Model Town' : 'DHA';
 
-    // Construct Google Calendar URL
+    // Construct Google Calendar URL as a fallback/bonus
     const eventTitle = `Dental Appointment: ${fullName}`;
     const eventDate = preferredDate.replace(/-/g, '');
-    const startTime = selectedTimeSlot.includes('AM') ? '090000' : '153000';
-    const endTime = selectedTimeSlot.includes('AM') ? '100000' : '163000';
+    const startTimeStr = selectedTimeSlot.includes('AM') ? '090000' : '153000';
+    const endTimeStr = selectedTimeSlot.includes('AM') ? '100000' : '163000';
 
     const details = `Patient: ${fullName}%0ANumber: ${phoneNumber}%0ABranch: ${branchName}%0AProblem: ${selectedProblem || 'Not specified'}%0ATime Slot: ${selectedTimeSlot}`;
-    const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${startTime}/${eventDate}T${endTime}&details=${details}&add=mannan796@gmail.com`;
+    const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}T${startTimeStr}/${eventDate}T${endTimeStr}&details=${details}&add=mannan796@gmail.com`;
 
-    // Attempt to send email through EmailJS (User needs to set up service)
+    const templateParams = {
+      email: 'mannan796@gmail.com', // Clinic's email for receiving
+      reply_to: patientEmail || 'no-reply@dentalenclosure.com', // To reply to user
+      user_email: patientEmail, // For Auto-Reply "To Email" field
+      name: fullName,
+      phone: phoneNumber,
+      branch: branchName,
+      problem: selectedProblem || 'Not specified',
+      date: preferredDate,
+      time: selectedTimeSlot,
+      title: `Appointment at ${branchName}` // For the {{title}} tag
+    };
+
     try {
-      // Note: You must initialize emailjs with your public key in main.jsx or here
-      // Replace with your real service, template and user IDs from emailjs.com
-      const templateParams = {
-        to_email: 'mannan796@gmail.com',
-        from_name: fullName,
-        phone_number: phoneNumber,
-        branch: branchName,
-        problem: selectedProblem || 'Not specified',
-        date: preferredDate,
-        time_slot: selectedTimeSlot
-      };
+      // Send email using EmailJS
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_ID,
+        templateParams,
+        EMAILJS_CONFIG.PUBLIC_KEY
+      );
 
-      // We'll show an alert guide since we don't have the keys yet
-      console.log('Pushing email to mannan796@gmail.com with details:', templateParams);
+      console.log('Email sent successfully to mannan796@gmail.com');
 
-      // Open calendar invite
+      // Open calendar invite as well
       window.open(calendarUrl, '_blank');
 
-      alert(`Booking request initiated!\n\n1. Check your email (mannan796@gmail.com) for the alert.\n2. Save the Google Calendar event that just opened to confirm.`);
+      alert(`Success! Booking request sent.\n\nAn email has been sent to the clinic (mannan796@gmail.com).\nPlease also save the Google Calendar event that just opened.`);
+
+      // Reset form
+      setFullName('');
+      setPhoneNumber('');
+      setPatientEmail('');
+      setSelectedBranch('');
+      setSelectedProblem('');
+      setPreferredDate('');
+      setSelectedTimeSlot('');
     } catch (error) {
-      console.error('Email failed:', error);
+      console.error('Email failed to send:', error);
+      // Fallback: Open calendar and show alternative message
       window.open(calendarUrl, '_blank');
+      alert(`The automated email failed to send, but we've opened a Google Calendar invite for you.\n\nPlease save the event to confirm your booking, or contact us directly at +92 323 7792138.`);
     } finally {
       setIsSending(false);
     }
@@ -379,6 +410,10 @@ const App = () => {
                 <div className="form-group">
                   <label>Phone Number</label>
                   <input type="tel" placeholder="e.g. 0300 1234567" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                </div>
+                <div className="form-group">
+                  <label>Email Address (Optional)</label>
+                  <input type="email" placeholder="e.g. yourname@example.com" value={patientEmail} onChange={(e) => setPatientEmail(e.target.value)} />
                 </div>
                 <div className="form-group">
                   <label>Preferred Branch</label>
